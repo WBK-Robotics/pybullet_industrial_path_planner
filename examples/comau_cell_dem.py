@@ -74,14 +74,14 @@ def setup_envirnoment(working_dir: str):
     """
     # Define URDF file paths.
     urdf_fofa = os.path.join(
-        working_dir, 'Objects', 'FoFa', 'FoFa.urdf'
+        working_dir, 'objects', 'FoFa', 'FoFa.urdf'
     )
     urdf_comau = os.path.join(
         working_dir, 'robot_descriptions',
         'comau_nj290_robotNC.urdf'
     )
     urdf_table = os.path.join(
-        working_dir, 'Objects', "Spannplatte.urdf"
+        working_dir, 'objects', 'table', "Spannplatte.urdf"
     )
     urdf_SRG = os.path.join(
         working_dir, 'robot_descriptions', 'SRG.urdf'
