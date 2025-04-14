@@ -412,9 +412,12 @@ def setup_planner_gui(robots, gripper, objects):
 
     # Create and run the GUI.
     root = tk.Tk()
+    gui_states_dir = os.path.join(
+        working_dir, 'gui_states', 'comau_cell_dem'
+    )
     gui = pbi.PbiPathPlannerGUI(root, path_planner_list, objects,
                                 planner_list, objective_list,
-                                constraint_list)
+                                constraint_list, gui_states_dir)
     root.mainloop()
     joint_path = copy.deepcopy(gui.joint_path)
     g_code_logger: pi.GCodeLogger = gui.g_code_logger
@@ -456,7 +459,7 @@ if __name__ == "__main__":
     transformed_g_code = transform_g_code(se3_g_code)
 
     exportfile = os.path.join(
-        working_dir, 'g_codes', 'transformed.mpf'
+        working_dir, 'g_codes', 'comau_cell_dem.mpf'
     )
     pi.GCodeLogger.write_g_code(
         transformed_g_code, exportfile, {}, postfix="M30\n"

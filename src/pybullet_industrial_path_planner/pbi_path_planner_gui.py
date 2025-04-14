@@ -56,13 +56,13 @@ class PbiPathPlannerGUI:
         planner_list: List of available planner types.
         objective_list: List of optimization objectives.
         constraint_list: List of constraint functions.
-        working_dir (str, optional): Directory for saving GUI states.
+        gui_states_dir (str, optional): Directory for saving GUI states.
             Defaults to os.getcwd().
     """
 
     def __init__(self, root: tk.Tk, planner_setup, obstacles,
                  planner_list, objective_list, constraint_list,
-                 working_dir: str = os.getcwd()) -> None:
+                 gui_states_dir: str) -> None:
         self.root: tk.Tk = root
 
         # Redirect console output to GUI widget.
@@ -119,7 +119,7 @@ class PbiPathPlannerGUI:
         self.current_box_size = [0.5, 0.5, 0.05]
 
         # Initialize GUI state folder and variables.
-        self.gui_states_folder = os.path.join(working_dir, 'gui_states')
+        self.gui_states_folder = os.path.join(gui_states_dir, 'gui_states')
         os.makedirs(self.gui_states_folder, exist_ok=True)
         self.saved_state_var = tk.StringVar(value="")
         self.gui_state_options = []
