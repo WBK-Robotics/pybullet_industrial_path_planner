@@ -1,10 +1,6 @@
-import numpy as np
 from ompl import base as ob
-from ompl import geometric as og
-import pybullet as p
-from pybullet_industrial import (RobotBase, JointPath)
-import sys
-import copy
+from pybullet_industrial_path_planner import PbiSpaceInformation
+
 
 class PbiValidityChecker(ob.StateValidityChecker):
     """

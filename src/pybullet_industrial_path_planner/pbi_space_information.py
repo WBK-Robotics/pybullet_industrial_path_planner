@@ -1,10 +1,9 @@
-import numpy as np
 from ompl import base as ob
-from ompl import geometric as og
-import pybullet as p
-from pybullet_industrial import (RobotBase, JointPath)
-import sys
-import copy
+from pybullet_industrial_path_planner import (
+    PbiStateSpace,
+    PbiObjectMover
+    )
+
 
 class PbiSpaceInformation(ob.SpaceInformation):
     """
@@ -29,7 +28,7 @@ class PbiSpaceInformation(ob.SpaceInformation):
         """
         super().__init__(state_space)
         self._robot = state_space._robot
-        self._state_space: PbiStateSpace = state_space
+        self._state_space = state_space
         self._object_mover = object_mover
 
     def set_state(self, state: ob.State) -> None:

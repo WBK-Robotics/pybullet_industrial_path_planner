@@ -8,7 +8,7 @@ from ompl import base as ob
 from ompl import geometric as og
 from scipy.spatial.transform import Rotation as R
 import pybullet_industrial as pi
-from path_planner_gui import PathPlannerGUI
+import pybullet_industrial_path_planner as pbi
 
 
 def transform_eulers_in_gcode(g_code: list) -> list:
@@ -231,8 +231,8 @@ def setup_planner_gui(robots, gripper, objects):
         tuple: (joint_path, g_code_logger)
     """
     # Create object movers.
-    object_mover = pi.PbiObjectMover()
-    gripper_mover = pi.PbiObjectMover()
+    object_mover = pbi.PbiObjectMover()
+    gripper_mover = pbi.PbiObjectMover()
 
     # Add gripper to object movers.
     pos_offset = np.array([0, 0, 0])
@@ -292,18 +292,14 @@ def setup_planner_gui(robots, gripper, objects):
         """Returns True if the end-effector is upright."""
         return all([check_endeffector_upright(robots[1])])
 
-    # Define objective functions.
-    def maximize_min_clearance_objective(si):
-        return pi.PbiMaximizeMinClearanceObjective(si)
-
     def clearance_objective(si):
-        return pi.PbiClearanceObjective(si)
+        return pbi.PbiClearanceObjective(si)
 
     def joint_path_length_objective(si):
         return ob.PathLengthOptimizationObjective(si)
 
     def endeffector_path_length_objective(si):
-        return pi.PbiEndeffectorPathLengthObjective(si)
+        return pbi.PbiEndeffectorPathLengthObjective(si)
 
     objective_weight: float = 0.5
     objectives = []
@@ -311,7 +307,7 @@ def setup_planner_gui(robots, gripper, objects):
     objectives.append((clearance_objective, 1 - objective_weight))
 
     def endeffector_path_clearance_objective(si):
-        return pi.PbiMultiOptimizationObjective(si, objectives)
+        return pbi.PbiMultiOptimizationObjective(si, objectives)
 
     objective_weight: float = 0.5
     objectives = []
@@ -319,7 +315,7 @@ def setup_planner_gui(robots, gripper, objects):
     objectives.append((clearance_objective, 1 - objective_weight))
 
     def joint_path_clearance_objective(si):
-        return pi.PbiMultiOptimizationObjective(si, objectives)
+        return pbi.PbiMultiOptimizationObjective(si, objectives)
 
     # Define planner types.
     def rrtsharp(si):
@@ -345,9 +341,6 @@ def setup_planner_gui(robots, gripper, objects):
     def rrtstar(si):
         return og.RRTstar(si)
 
-    def aitstar(si):
-        return og.AITstar(si)
-
     def rrtconnect(si):
         return og.RRTConnect(si)
 
@@ -370,7 +363,7 @@ def setup_planner_gui(robots, gripper, objects):
         return robot_clearance.get_external_distance(0.5)
 
     # Initialize planner setups.
-    path_planner_1 = pi.PbiPlannerSimpleSetup(
+    path_planner_1 = pbi.PbiSimpleSetup(
         robot=robots[0],
         object_mover=object_mover,
         collision_check_function=collision_check_C,
@@ -378,7 +371,7 @@ def setup_planner_gui(robots, gripper, objects):
     )
     path_planner_1.name = "Robot+ Gripper+ Object"
 
-    path_planner_2 = pi.PbiPlannerSimpleSetup(
+    path_planner_2 = pbi.PbiSimpleSetup(
         robot=robots[0],
         object_mover=gripper_mover,
         collision_check_function=collision_check_C,
@@ -386,14 +379,14 @@ def setup_planner_gui(robots, gripper, objects):
     )
     path_planner_2.name = "Robot+ Gripper"
 
-    path_planner_3 = pi.PbiPlannerSimpleSetup(
+    path_planner_3 = pbi.PbiSimpleSetup(
         robot=robots[0],
         collision_check_function=collision_check_C,
         clearance_function=get_robot_clearance
     )
     path_planner_3.name = "Solely Robot"
 
-    path_planner_4 = pi.PbiPlannerSimpleSetup(
+    path_planner_4 = pbi.PbiSimpleSetup(
         robot=robots[1],
         collision_check_function=collision_check_D,
         clearance_function=get_robot_clearance
@@ -408,7 +401,8 @@ def setup_planner_gui(robots, gripper, objects):
         path_planner_4, path_planner_4
     ]
     planner_list = [
-        abitstar, bitstar, rrt, rrtstar, informed_rrtstar]
+        abitstar, bitstar, rrt, rrtstar, informed_rrtstar, sbl,
+        fmt, bfmt, lbkpiece1, rrtconnect, aitstar, rrtsharp]
     objective_list = [
         None, clearance_objective, endeffector_path_length_objective,
         joint_path_length_objective, endeffector_path_clearance_objective,
@@ -418,9 +412,9 @@ def setup_planner_gui(robots, gripper, objects):
 
     # Create and run the GUI.
     root = tk.Tk()
-    gui = PathPlannerGUI(root, path_planner_list, objects,
-                         planner_list, objective_list,
-                         constraint_list)
+    gui = pbi.PbiPathPlannerGUI(root, path_planner_list, objects,
+                                planner_list, objective_list,
+                                constraint_list)
     root.mainloop()
     joint_path = copy.deepcopy(gui.joint_path)
     g_code_logger: pi.GCodeLogger = gui.g_code_logger

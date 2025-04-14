@@ -1,16 +1,20 @@
-import numpy as np
 from ompl import base as ob
 from ompl import geometric as og
-import pybullet as p
-from pybullet_industrial import (RobotBase, JointPath)
-import sys
-import copy
+from pybullet_industrial import RobotBase
+from pybullet_industrial_path_planner import (
+    PbiStateSpace,
+    PbiSpaceInformation,
+    PbiValidityChecker,
+    PbiClearanceObjective,
+    PbiEndeffectorPathLengthObjective
+)
 
 # Planner constants.
 INTERPOLATION_PRECISION = 0.01
 VALIDITY_RESOLUTION = 0.005
 
-class SimpleSetup(og.SimpleSetup):
+
+class PbiSimpleSetup(og.SimpleSetup):
     """
     All components are integrated to define and solve a robot planning
     problem. The state space, space information, validity checker,
@@ -244,7 +248,8 @@ class SimpleSetup(og.SimpleSetup):
                           simplified_path, self.joint_path_length_objective))
                 print("Endeffector Path Length Objective Value:",
                       self.get_path_cost_value(
-                          simplified_path, self.endeffector_path_length_objective))
+                          simplified_path,
+                          self.endeffector_path_length_objective))
                 # Only accept the simplified path if the cost is not higher.
                 if new_cost <= cost:
                     joint_path = self._state_space.path_to_joint_path(

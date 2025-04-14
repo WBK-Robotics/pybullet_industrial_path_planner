@@ -1,10 +1,8 @@
 import numpy as np
 from ompl import base as ob
-from ompl import geometric as og
-import pybullet as p
-from pybullet_industrial import (RobotBase, JointPath)
-import sys
-import copy
+from pybullet_industrial import RobotBase
+from pybullet_industrial_path_planner import PbiSpaceInformation
+
 
 class PbiEndeffectorPathLengthObjective(ob.OptimizationObjective):
     """
@@ -20,6 +18,7 @@ class PbiEndeffectorPathLengthObjective(ob.OptimizationObjective):
         """
         super(PbiEndeffectorPathLengthObjective, self).__init__(si)
         self._si = si
+        self._robot: RobotBase = si._robot
         self.setCostToGoHeuristic(ob.CostToGoHeuristic(self.costToGo))
 
     def stateCost(self, state: ob.State) -> ob.Cost:
@@ -40,9 +39,9 @@ class PbiEndeffectorPathLengthObjective(ob.OptimizationObjective):
         """
 
         self._si.set_state(s1)
-        pos1, ori1 = self._si._robot.get_endeffector_pose()
+        pos1, ori1 = self._robot.get_endeffector_pose()
         self._si.set_state(s2)
-        pos2, ori2 = self._si._robot.get_endeffector_pose()
+        pos2, ori2 = self._robot.get_endeffector_pose()
 
         # Compute Euclidean distance between translations.
         trans_diff = np.linalg.norm(pos1 - pos2)

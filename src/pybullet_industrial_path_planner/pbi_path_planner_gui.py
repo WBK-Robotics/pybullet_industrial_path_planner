@@ -43,7 +43,7 @@ class ConsoleRedirector:
         self.original_stdout.flush()
 
 
-class PathPlannerGUI:
+class PbiPathPlannerGUI:
     """
     Compact GUI for the Path Planner. Provides controls for robot joints,
     workspace (end-effector) pose, obstacle parameters, planner selections,
@@ -1018,7 +1018,7 @@ class PathPlannerGUI:
         print(f"Planning (allowed time = {planning_time}s)...")
         if self.start is None or self.goal is None:
             print("Error: Start and goal configurations must be set "
-                "before planning.")
+                  "before planning.")
             return
         try:
             result, joint_path = self.planner_setup.plan_start_goal(
@@ -1029,7 +1029,7 @@ class PathPlannerGUI:
             )
             if not result:
                 print("Planning failed: No solution found within "
-                    "the given time.")
+                      "the given time.")
                 self.joint_path = None
             else:
                 self.joint_path = joint_path
