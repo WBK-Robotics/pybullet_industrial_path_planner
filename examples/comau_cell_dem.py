@@ -87,13 +87,13 @@ def setup_envirnoment(working_dir: str):
         working_dir, 'robot_descriptions', 'SRG.urdf'
     )
     urdf_emo_sr = os.path.join(
-        working_dir, 'Objects', 'EMO_SR_full.urdf'
+        working_dir, 'objects','emo_sr', 'EMO_SR_full.urdf'
     )
     urdf_box = os.path.join(
-        working_dir, 'Objects', 'Box', 'stor_box.urdf'
+        working_dir, 'objects', 'store_box', 'store_box.urdf'
     )
     urdf_fixture = os.path.join(
-        working_dir, 'Objects', 'Dreibackenfutter',
+        working_dir, 'objects', 'workpiece_fixture',
         'Dreibackenfutter.urdf'
     )
 
