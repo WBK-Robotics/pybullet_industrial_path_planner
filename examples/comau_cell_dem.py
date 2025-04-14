@@ -77,17 +77,17 @@ def setup_envirnoment(working_dir: str):
         working_dir, 'objects', 'FoFa', 'FoFa.urdf'
     )
     urdf_comau = os.path.join(
-        working_dir, 'robot_descriptions',
+        working_dir, 'robot_descriptions', 'comau_nj290',
         'comau_nj290_robotNC.urdf'
     )
     urdf_table = os.path.join(
         working_dir, 'objects', 'table', "Spannplatte.urdf"
     )
     urdf_SRG = os.path.join(
-        working_dir, 'robot_descriptions', 'SRG.urdf'
+        working_dir, 'robot_descriptions', 'srg_gripper', 'SRG.urdf'
     )
     urdf_emo_sr = os.path.join(
-        working_dir, 'objects','emo_sr', 'EMO_SR_full.urdf'
+        working_dir, 'objects', 'emo_sr', 'EMO_SR_full.urdf'
     )
     urdf_box = os.path.join(
         working_dir, 'objects', 'store_box', 'store_box.urdf'
