@@ -1,8 +1,5 @@
 from ompl import base as ob
-from pybullet_industrial_path_planner import (
-    PbiStateSpace,
-    PbiObjectMover
-    )
+import pybullet_industrial_path_planner as pbi
 
 
 class PbiSpaceInformation(ob.SpaceInformation):
@@ -16,8 +13,8 @@ class PbiSpaceInformation(ob.SpaceInformation):
         object_mover (PbiObjectMover): Optional mover for updating objects.
     """
 
-    def __init__(self, state_space: PbiStateSpace,
-                 object_mover: PbiObjectMover) -> None:
+    def __init__(self, state_space: pbi.PbiStateSpace,
+                 object_mover: pbi.PbiObjectMover) -> None:
         """
         The space information is initialized with the state space and
         object mover.

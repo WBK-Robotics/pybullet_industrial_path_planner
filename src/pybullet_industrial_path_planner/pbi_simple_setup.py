@@ -1,13 +1,7 @@
 from ompl import base as ob
 from ompl import geometric as og
 from pybullet_industrial import RobotBase
-from pybullet_industrial_path_planner import (
-    PbiStateSpace,
-    PbiSpaceInformation,
-    PbiValidityChecker,
-    PbiClearanceObjective,
-    PbiEndeffectorPathLengthObjective
-)
+import pybullet_industrial_path_planner as pbi
 
 # Planner constants.
 INTERPOLATION_PRECISION = 0.01
@@ -51,14 +45,15 @@ class PbiSimpleSetup(og.SimpleSetup):
         self._robot = robot
 
         # Initialize the state space using the robot's joint limits.
-        self._state_space = PbiStateSpace(robot)
+        self._state_space = pbi.PbiStateSpace(robot)
         # Create and assign the space information.
-        super().__init__(PbiSpaceInformation(self._state_space, object_mover))
+        super().__init__(pbi.PbiSpaceInformation(self._state_space,
+                                                 object_mover))
         self._si = self.getSpaceInformation()
 
         # Create and set the validity checker with collision,
         # constraint, and clearance functions.
-        self._validity_checker = PbiValidityChecker(
+        self._validity_checker = pbi.PbiStateValidityChecker(
             self._si,
             collision_check_function,
             constraint_function=constraint_function,
@@ -84,9 +79,9 @@ class PbiSimpleSetup(og.SimpleSetup):
         # Assign a custom name or a default name.
         self.name = name if name is not None else "PbiPlannerSimpleSetup"
 
-        self.clearance_objective = PbiClearanceObjective(self._si)
+        self.clearance_objective = pbi.PbiClearanceObjective(self._si)
         self.endeffector_path_length_objective = (
-            PbiEndeffectorPathLengthObjective(self._si)
+            pbi.PbiEndeffectorPathLengthObjective(self._si)
         )
         self.joint_path_length_objective = ob.PathLengthOptimizationObjective(
             self._si
@@ -186,9 +181,10 @@ class PbiSimpleSetup(og.SimpleSetup):
         if objective is not None:
             cost = path.cost(
                 objective)
+            return cost.value()
         else:
             cost = path.length()
-        return cost.value()
+            return cost
 
     def plan_start_goal(self, start: dict, goal: dict,
                         allowed_time: float = 5.0,
@@ -225,14 +221,6 @@ class PbiSimpleSetup(og.SimpleSetup):
             path = self.getSolutionPath()
             cost = self.get_path_cost_value(path)
             print("Path cost after simplification: ", cost)
-            print("Clearance Value:", self.get_path_cost_value(
-                path, self.clearance_objective))
-            print("Path Length Ojbective Value:",
-                  self.get_path_cost_value(
-                      path, self.joint_path_length_objective))
-            print("Endeffector Path Length Objective Value:",
-                  self.get_path_cost_value(
-                      path, self.endeffector_path_length_objective))
             joint_path = self._state_space.path_to_joint_path(
                 path, self._interpolation_precision)
             # Simplify the solution if requested.
@@ -241,15 +229,6 @@ class PbiSimpleSetup(og.SimpleSetup):
                 simplified_path = self.getSolutionPath()
                 new_cost = self.get_path_cost_value(simplified_path)
                 print("Path cost after simplification: ", new_cost)
-                print("Clearance Value:", self.get_path_cost_value(
-                    simplified_path, self.clearance_objective))
-                print("Path Length Ojbective Value:",
-                      self.get_path_cost_value(
-                          simplified_path, self.joint_path_length_objective))
-                print("Endeffector Path Length Objective Value:",
-                      self.get_path_cost_value(
-                          simplified_path,
-                          self.endeffector_path_length_objective))
                 # Only accept the simplified path if the cost is not higher.
                 if new_cost <= cost:
                     joint_path = self._state_space.path_to_joint_path(

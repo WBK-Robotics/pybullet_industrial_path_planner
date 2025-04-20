@@ -105,7 +105,7 @@ class PbiPathPlannerGUI:
         self.goal = None
         self.joint_order = self.robot.get_moveable_joints()[0]
         self.joint_limits = self.robot.get_joint_limits()
-        self.root.title("PyBullet Path Planning")
+        self.root.title("PyBullet Industrial Path Planer GUI")
         self.joint_path = None
         self.g_code_logger = None
         self.joint_values = [

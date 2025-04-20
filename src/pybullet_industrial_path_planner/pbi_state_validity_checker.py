@@ -2,7 +2,7 @@ from ompl import base as ob
 from pybullet_industrial_path_planner import PbiSpaceInformation
 
 
-class PbiValidityChecker(ob.StateValidityChecker):
+class PbiStateValidityChecker(ob.StateValidityChecker):
     """
     A state is validated by updating the robot configuration and performing
     collision and constraint tests.
