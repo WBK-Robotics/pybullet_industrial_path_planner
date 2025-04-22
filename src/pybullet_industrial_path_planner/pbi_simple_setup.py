@@ -220,7 +220,7 @@ class PbiSimpleSetup(og.SimpleSetup):
         if solved:
             path = self.getSolutionPath()
             cost = self.get_path_cost_value(path)
-            print("Path cost after simplification: ", cost)
+            print("Path cost before simplification: ", cost)
             joint_path = self._state_space.path_to_joint_path(
                 path, self._interpolation_precision)
             # Simplify the solution if requested.

@@ -6,6 +6,8 @@ import tkinter as tk
 import numpy as np
 import pybullet as p
 import pybullet_industrial as pi
+from pybullet_industrial.utility import draw_coordinate_system
+
 
 # Constants for joint and workspace increments
 JOINT_INCREMENT: float = 0.1
@@ -1055,6 +1057,9 @@ class PbiPathPlannerGUI:
                     pos, ori = self.robot.get_endeffector_pose()
                     self.object_mover.match_moving_objects(pos, ori)
                 time.sleep(0.03)
+                # Draw excecution path
+                pos, ori = self.robot.get_endeffector_pose()
+                draw_coordinate_system(pos, ori)
                 self.g_code_logger.update_g_code()
             print("Execution completed.")
         else:

@@ -301,21 +301,20 @@ def setup_planner_gui(robots, gripper, objects):
     def endeffector_path_length_objective(si):
         return pbi.PbiEndeffectorPathLengthObjective(si)
 
-    objective_weight: float = 0.5
-    objectives = []
-    objectives.append((endeffector_path_length_objective, objective_weight))
-    objectives.append((clearance_objective, 1 - objective_weight))
-
-    def endeffector_path_clearance_objective(si):
-        return pbi.PbiMultiOptimizationObjective(si, objectives)
-
-    objective_weight: float = 0.5
-    objectives = []
-    objectives.append((joint_path_length_objective, objective_weight))
-    objectives.append((clearance_objective, 1 - objective_weight))
+    objectives_equal_weights = []
+    objectives_equal_weights.append((joint_path_length_objective, 0.5))
+    objectives_equal_weights.append((clearance_objective, 0.5))
 
     def joint_path_clearance_objective(si):
-        return pbi.PbiMultiOptimizationObjective(si, objectives)
+        return pbi.PbiMultiOptimizationObjective(si, objectives_equal_weights)
+
+    objectives_unequal_weights = []
+    objectives_unequal_weights.append((joint_path_length_objective, 0.95))
+    objectives_unequal_weights.append((clearance_objective, 1 - 0.95))
+
+    def joint_path_clearance_unequal_objective(si):
+        return pbi.PbiMultiOptimizationObjective(si, objectives_unequal_weights)
+
 
     # Define planner types.
     def rrtsharp(si):
@@ -405,8 +404,8 @@ def setup_planner_gui(robots, gripper, objects):
         fmt, bfmt, lbkpiece1, rrtconnect, aitstar, rrtsharp]
     objective_list = [
         None, clearance_objective, endeffector_path_length_objective,
-        joint_path_length_objective, endeffector_path_clearance_objective,
-        joint_path_clearance_objective
+        joint_path_length_objective,
+        joint_path_clearance_objective, joint_path_clearance_unequal_objective
     ]
     constraint_list = [None, constraint_function, constraint_function_robot_D]
 
