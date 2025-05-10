@@ -1,16 +1,16 @@
 <robot name="scara_control">
     <!-- Global Material Definitions -->
     <material name="aluminium">
-        <color rgba="0.8 0.8 0.8 1.0" /> <!-- Light metallic gray -->
+        <color rgba="0.8 0.8 0.8 1.0" />
     </material>
     <material name="steel">
-        <color rgba="0.6 0.6 0.6 1.0" /> <!-- Darker metallic gray -->
+        <color rgba="0.6 0.6 0.6 1.0" />
     </material>
     <material name="plastic">
-        <color rgba="0.1 0.1 0.1 1.0" /> <!-- Black for plastic parts -->
+        <color rgba="0.1 0.1 0.1 1.0" />
     </material>
     <material name="glass">
-        <color rgba="0.7 0.7 1.0 0.5" /> <!-- Semi-transparent glass -->
+        <color rgba="0.7 0.7 1.0 0.5" />
     </material>
 
     <!-- Base Link -->
@@ -18,21 +18,21 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/base_link.STL" />
+                <mesh filename="scara_meshes/base_link.STL" scale="5 5 5" />
             </geometry>
             <material name="steel" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/base_link.STL" />
+                <mesh filename="scara_meshes/base_link.STL" scale="5 5 5" />
             </geometry>
         </collision>
     </link>
 
     <!-- Joint 1 -->
     <joint name="joint_1" type="revolute">
-        <origin xyz="0.065 0 0" rpy="0 0 0" />
+        <origin xyz="0.325 0 0" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="link_1" />
         <axis xyz="0 0 1" />
@@ -44,21 +44,21 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_1.STL" />
+                <mesh filename="scara_meshes/link_1.STL" scale="5 5 5" />
             </geometry>
             <material name="aluminium" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_1.STL" />
+                <mesh filename="scara_meshes/link_1.STL" scale="5 5 5" />
             </geometry>
         </collision>
     </link>
 
     <!-- Joint 2 -->
     <joint name="joint_2" type="revolute">
-        <origin xyz="0.028115 -0.16259 0.2335" rpy="0 0 0" />
+        <origin xyz="0.140575 -0.81295 1.1675" rpy="0 0 0" />
         <parent link="link_1" />
         <child link="link_2" />
         <axis xyz="0 0 1" />
@@ -70,25 +70,25 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_2.STL" />
+                <mesh filename="scara_meshes/link_2.STL" scale="5 5 5" />
             </geometry>
             <material name="aluminium" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_2.STL" />
+                <mesh filename="scara_meshes/link_2.STL" scale="5 5 5" />
             </geometry>
         </collision>
     </link>
 
     <!-- Joint 3 -->
     <joint name="joint_3" type="prismatic">
-        <origin xyz="0.10838 -0.062931 0.0386" rpy="0 0 0" />
+        <origin xyz="0.5419 -0.314655 0.193" rpy="0 0 0" />
         <parent link="link_2" />
         <child link="link_3" />
         <axis xyz="0 0 1" />
-        <limit lower="-0.08" upper="0" effort="50" velocity="1" />
+        <limit lower="-0.4" upper="0" effort="50" velocity="1" />
     </joint>
 
     <!-- Link 3 -->
@@ -96,22 +96,16 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_3.STL" />
+                <mesh filename="scara_meshes/link_3.STL" scale="5 5 5" />
             </geometry>
             <material name="aluminium" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="scara_meshes/link_3.STL" />
+                <mesh filename="scara_meshes/link_3.STL" scale="5 5 5" />
             </geometry>
         </collision>
     </link>
 
-    <!-- Gazebo Plugin -->
-    <gazebo>
-        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <robotNamespace>/scara_control</robotNamespace>
-        </plugin>
-    </gazebo>
 </robot>

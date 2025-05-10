@@ -64,7 +64,7 @@ class PbiPathPlannerGUI:
 
     def __init__(self, root: tk.Tk, planner_setup, obstacles,
                  planner_list, objective_list, constraint_list,
-                 gui_states_dir: str) -> None:
+                 gui_states_dir: str, draw_offset: np.array) -> None:
         self.root: tk.Tk = root
 
         # Redirect console output to GUI widget.
@@ -83,6 +83,8 @@ class PbiPathPlannerGUI:
 
         # Set simplify option
         self.simplify = tk.BooleanVar(value=True)
+        self.draw_path = tk.BooleanVar(value=True)
+
 
         # Setup robot and obstacles.
         self.robot = self.planner_setup._robot
@@ -125,6 +127,12 @@ class PbiPathPlannerGUI:
         os.makedirs(self.gui_states_folder, exist_ok=True)
         self.saved_state_var = tk.StringVar(value="")
         self.gui_state_options = []
+
+        # Initialize draw offset for endeffector.
+        if draw_offset is None:
+            self.draw_offset = np.array([0, 0, 0])
+        else:
+            self.draw_offset = draw_offset
 
         # Create and setup widgets.
         self.create_widgets()
@@ -437,6 +445,12 @@ class PbiPathPlannerGUI:
             text="Simplify",
             variable=self.simplify
         ).grid(row=0, column=8, padx=2)
+
+        tk.Checkbutton(
+        planner_frame,
+        text="Draw Path",
+        variable=self.draw_path
+        ).grid(row=0, column=9, padx=2)
 
         status_frame = tk.Frame(mid_frame)
         status_frame.grid(row=0, column=1, padx=3, pady=3, sticky="e")
@@ -1058,9 +1072,11 @@ class PbiPathPlannerGUI:
                     self.object_mover.match_moving_objects(pos, ori)
                 time.sleep(0.03)
                 # Draw excecution path
-                pos, ori = self.robot.get_endeffector_pose()
-                draw_coordinate_system(pos, ori)
-                self.g_code_logger.update_g_code()
+                if self.draw_path:
+                    pos, ori = self.robot.get_endeffector_pose()
+                    pos = pos + self.draw_offset
+                    draw_coordinate_system(pos, ori)
+                    self.g_code_logger.update_g_code()
             print("Execution completed.")
         else:
             print("No execution path available.")
