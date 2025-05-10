@@ -1,0 +1,201 @@
+<?xml version="1.0" ?>
+<robot name="gantry">
+
+	<!-- * * * Link Definitions * * * -->
+
+	<link name="base">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray1">
+				<color rgba="0.2 0.2 0.2 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/base_back.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray1">
+				<color rgba="0.2 0.2 0.2 1"/>
+			</material>
+			<geometry>
+                <mesh filename="gantry_mesh/base_front.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray1">
+				<color rgba="0.2 0.2 0.2 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/base_back.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray1">
+				<color rgba="0.2 0.2 0.2 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/base_front.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_x">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray2">
+				<color rgba="0.4 0.4 0.4 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_x.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_x.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_y">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray1">
+				<color rgba="0.2 0.2 0.2 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_y.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_y.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_z">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<material name="gray2">
+				<color rgba="0.4 0.4 0.4 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_z.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_z.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_a">
+		<visual>
+			<origin xyz="-0.455 -0.305 0" rpy="0 0 0"/>
+			<material name="gray2">
+				<color rgba="0.4 0.4 0.4 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_a.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="-0.455 -0.305 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_a.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_b">
+		<visual>
+			<origin xyz="-0.455 -0.305 -0.215" rpy="0 0 0"/>
+			<material name="gray2">
+				<color rgba="0.4 0.4 0.4 1"/>
+			</material>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_b.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</visual>
+		<collision>
+			<origin xyz="-0.455 -0.305 -0.215" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="gantry_mesh/wagon_b.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+		</collision>
+	</link>
+
+	<link name="wagon_c">
+		<visual>
+			<origin xyz="-0.455 -0.305 -0.215" rpy="0 0 0"/>
+			<material name="gray2">
+				<color rgba="0.4 0.4 0.4 1"/>
+			</material>
+			<geometry>
+				<mesh filename="gantry_mesh/wagon_c.stl" scale="0.001 0.001 0.001"/>
+			</geometry>
+		</visual>
+		<collision>
+			<origin xyz="-0.455 -0.305 -0.215" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="gantry_mesh/wagon_c.stl" scale="0.001 0.001 0.001"/>
+			</geometry>
+		</collision>
+	</link>
+
+
+	<joint name="x_axis" type="prismatic">
+		<parent link="base"/>
+		<child link="wagon_x"/>
+		<origin rpy="0 0 0" xyz="-0 0 0"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="200" lower="-0" upper="1.5" velocity="0.2"/>
+	</joint>
+
+	<joint name="y_axis" type="prismatic">
+		<parent link="wagon_x"/>
+		<child link="wagon_y"/>
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="200" lower="-0" upper="1.2" velocity="0.2"/>
+	</joint>
+
+	<joint name="z_axis" type="prismatic">
+		<parent link="wagon_y"/>
+		<child link="wagon_z"/>
+		<origin rpy="0 0 0" xyz="-0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="200" lower="-0" upper="1.0" velocity="0.2"/>
+	</joint>
+
+	<joint name="a_axis" type="revolute">
+		<parent link="wagon_z"/>
+		<child link="wagon_a"/>
+		<origin xyz="0.455 0.305 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="20000" lower="-3.14159265358" upper="3.14159265358" velocity="1.91986217719"/>
+	</joint>
+
+	<joint name="b_axis" type="revolute">
+		<parent link="wagon_a"/>
+		<child link="wagon_b"/>
+		<origin xyz="0. 0 0.215" rpy="0 0 0"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="20000" lower="-3.14159265358" upper="3.14159265358" velocity="1.91986217719"/>
+	</joint>
+
+	<joint name="c_axis" type="revolute">
+		<parent link="wagon_b"/>
+		<child link="wagon_c"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="20000" lower="-3.14159265358" upper="3.14159265358" velocity="1.91986217719"/>
+	</joint>
+</robot>
