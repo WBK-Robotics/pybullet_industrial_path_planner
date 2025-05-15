@@ -24,7 +24,7 @@
 
 * **Graphical User Interface**: Provides practical accessibility through visual interaction.
 
-* **G-code Generation**: Tools for logging or converting solution paths into deployable machine code.
+* **G-Code Generation**: Tools for logging or converting solution paths into deployable machine code.
 
 ### Example: Comau NJ290-3.0 in a Cell Environment
 ![Comau Cell Planning Demo](./docs/comau_cell.gif)
