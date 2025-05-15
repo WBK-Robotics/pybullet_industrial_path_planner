@@ -28,7 +28,7 @@ jobs:
     - name: Install OMPL prebuilt wheel
       run: |
         wget https://github.com/ompl/ompl/releases/download/prerelease/ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
-        pip install ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
+        pip install ./.github/ompl/ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
 
     - name: Clone and install pybullet_industrial
       run: |
@@ -50,10 +50,10 @@ jobs:
         coverage run --source pybullet_industrial -m pytest
         coverage xml
 
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
-        fail_ci_if_error: true
-        verbose: true
+    # - name: Upload Coverage to Codecov
+    #   uses: codecov/codecov-action@v2
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     files: ./coverage.xml
+    #     fail_ci_if_error: true
+    #     verbose: true
