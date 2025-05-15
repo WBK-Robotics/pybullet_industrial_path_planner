@@ -61,10 +61,6 @@ cd pybullet_industrial_path_planner
 pip install src/
 ```
 
-## Academic Origin
-
-This package was developed in the context of a Master's thesis at KIT. It is intended for research and prototyping in industrial robotic motion planning.
-
 ## License
 
 MIT License
