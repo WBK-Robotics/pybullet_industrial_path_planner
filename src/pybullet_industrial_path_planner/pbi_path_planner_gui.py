@@ -12,6 +12,7 @@ from pybullet_industrial.utility import draw_coordinate_system
 # Constants for joint and workspace increments
 JOINT_INCREMENT: float = 0.1
 WORKSPACE_INCREMENT: float = 0.1  # Increment for workspace values
+ANIMATION_DELAY: float = 0.02  # Delay for animation in seconds
 
 
 class ConsoleRedirector:
@@ -60,11 +61,12 @@ class PbiPathPlannerGUI:
         constraint_list: List of constraint functions.
         gui_states_dir (str, optional): Directory for saving GUI states.
             Defaults to os.getcwd().
+        draw_offset (np.ndarray, optional): Offset for end-effector
     """
 
     def __init__(self, root: tk.Tk, planner_setup, obstacles,
                  planner_list, objective_list, constraint_list,
-                 gui_states_dir: str, draw_offset = None) -> None:
+                 gui_states_dir: str, draw_offset=None) -> None:
         self.root: tk.Tk = root
 
         # Redirect console output to GUI widget.
@@ -83,16 +85,15 @@ class PbiPathPlannerGUI:
 
         # Set simplify option
         self.simplify = tk.BooleanVar(value=True)
-        self.draw_path = tk.BooleanVar(value=True)
-
+        self.draw_path = tk.BooleanVar(value=False)
 
         # Setup robot and obstacles.
         self.robot = self.planner_setup._robot
         self.collision_check = (
-            self.planner_setup._validity_checker.collision_check_function
+            self.planner_setup._validity_checker._collision_check_function
         )
         self.constraint_function = (
-            self.planner_setup._validity_checker.constraint_function or []
+            self.planner_setup._validity_checker._constraint_function or []
         )
         self.object_mover = self.planner_setup._si._object_mover
         self.obstacles = obstacles
@@ -675,10 +676,10 @@ class PbiPathPlannerGUI:
         self.planner_setup = self.planner_mappings[selection]
         self.robot = self.planner_setup._robot
         self.collision_check = (
-            self.planner_setup._validity_checker.collision_check_function
+            self.planner_setup._validity_checker._collision_check_function
         )
         self.constraint_function = (
-            self.planner_setup._validity_checker.constraint_function or []
+            self.planner_setup._validity_checker._constraint_function or []
         )
         self.object_mover = self.planner_setup._si._object_mover
         self.update_workspace_values()
@@ -726,10 +727,10 @@ class PbiPathPlannerGUI:
         selected_constraint = self.constraint_mapping[selection]
         self.planner_setup.set_constraint_function(selected_constraint)
         self.collision_check = (
-            self.planner_setup._validity_checker.collision_check_function
+            self.planner_setup._validity_checker._collision_check_function
         )
         self.constraint_function = (
-            self.planner_setup._validity_checker.constraint_function or []
+            self.planner_setup._validity_checker._constraint_function or []
         )
         print(f"Set constraints: {selection}")
 
@@ -756,9 +757,9 @@ class PbiPathPlannerGUI:
         Returns:
             None
         """
-        if self.planner_setup._validity_checker.clearance_function:
+        if self.planner_setup._validity_checker._clearance_function:
             clearance_val = (
-                self.planner_setup._validity_checker.clearance_function()
+                self.planner_setup._validity_checker._clearance_function()
             )
             if clearance_val is None:
                 self.clearance_label.config(text="OOR")
@@ -1070,12 +1071,12 @@ class PbiPathPlannerGUI:
                 if self.object_mover:
                     pos, ori = self.robot.get_endeffector_pose()
                     self.object_mover.match_moving_objects(pos, ori)
-                time.sleep(0.1)
+                time.sleep(ANIMATION_DELAY)
                 # Draw excecution path
                 draw_path = self.draw_path.get()
                 if draw_path:
                     pos, ori = self.robot.get_endeffector_pose()
-                    pos = pos + self.draw_offset
+                    pos = pos + self.draw_offset[0]
                     draw_coordinate_system(pos, ori)
                     self.g_code_logger.update_g_code()
             print("Execution completed.")

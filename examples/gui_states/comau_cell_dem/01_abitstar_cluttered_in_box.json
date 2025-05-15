@@ -1,6 +1,6 @@
 {
     "selected_obstacle": "",
-    "planner_setup": "Robot+ Gripper+ Object",
+    "planner_setup": "Robot 1 + Gripper + Object",
     "planner_type": "abitstar",
     "objective": "None",
     "constraint": "None",

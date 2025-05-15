@@ -6,38 +6,53 @@ from pybullet_industrial_path_planner import PbiSpaceInformation
 
 class PbiEndeffectorPathLengthObjective(ob.OptimizationObjective):
     """
-    The cost is computed based on the length of the end-effector path.
+    Optimization objective based on the end-effector path length
+    in the robots workspace.
+
+    The cost is computed as the spatial and angular distance between
+    consecutive end-effector poses, combining translation and rotation.
+
+    Args:
+        si (PbiSpaceInformation): Space information including robot model
+            and methods for state conversion and setting.
     """
 
     def __init__(self, si: PbiSpaceInformation) -> None:
-        """
-        The end-effector path length objective is initialized.
 
-        Args:
-            si (PbiSpaceInformation): The robot's space information.
-        """
         super(PbiEndeffectorPathLengthObjective, self).__init__(si)
         self._si = si
         self._robot: RobotBase = si._robot
         self.setCostToGoHeuristic(ob.CostToGoHeuristic(self.costToGo))
 
     def stateCost(self, state: ob.State) -> ob.Cost:
+        """
+        Cost for an individual state.
+
+        Always returns zero since only motion cost is considered.
+
+        Args:
+            state (ob.State): State to evaluate.
+
+        Returns:
+            ob.Cost: Always zero.
+        """
         return ob.Cost(0)
 
     def motionCost(self, s1: ob.State, s2: ob.State) -> ob.Cost:
         """
-        The cost for a motion between two states is computed based on
-        the SE(3) distance between the end effector poses obtained from
-        the states.
+        Compute the cost between two states based on workspace distance.
+
+        Translation is measured as Euclidean distance, rotation as
+        quaternion angular distance. Both components are combined into
+        a scalar cost value.
 
         Args:
-            s1 (ob.State): Starting state.
-            s2 (ob.State): Ending state.
+            s1 (ob.State): Start state.
+            s2 (ob.State): Target state.
 
         Returns:
-            ob.Cost: The computed cost for the motion.
+            ob.Cost: Combined translational and rotational motion cost.
         """
-
         self._si.set_state(s1)
         pos1, ori1 = self._robot.get_endeffector_pose()
         self._si.set_state(s2)
@@ -46,28 +61,28 @@ class PbiEndeffectorPathLengthObjective(ob.OptimizationObjective):
         # Compute Euclidean distance between translations.
         trans_diff = np.linalg.norm(pos1 - pos2)
 
-        # Compute rotational difference between quaternions.
-        # Quaternions are assumed to be normalized np arrays [x, y, z, w].
+        # Compute quaternion distance.
         dot = np.abs(np.dot(ori1, ori2))
         dot = np.clip(dot, -1.0, 1.0)
         rot_diff = 2.0 * np.arccos(dot)
 
         total_dist = np.sqrt(trans_diff**2 + rot_diff**2)
+
         return ob.Cost(total_dist)
 
     def costToGo(self, state: ob.State, goal: ob.Goal) -> ob.Cost:
         """
-        Heuristic cost from 'state' to the goal based on the SE(3) distance
-        between the end-effector pose of the given state and the goal state.
-        If the goal is an instance of ob.GoalState, its representative state
-        is used.
+        Heuristic estimate from a given state to the goal.
+
+        Uses the same metric as motionCost to evaluate distance
+        between end-effector poses.
 
         Args:
-            state (ob.State): The current state.
-            goal (ob.Goal): The goal or goal state.
+            state (ob.State): Current planning state.
+            goal (ob.Goal): Goal representation or concrete goal state.
 
         Returns:
-            ob.Cost: The heuristic cost estimate.
+            ob.Cost: Estimated cost-to-go.
         """
         # If the goal has a getState method, extract the state.
         if hasattr(goal, "getState"):

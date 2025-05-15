@@ -4,28 +4,32 @@ import pybullet_industrial_path_planner as pbi
 
 class PbiSpaceInformation(ob.SpaceInformation):
     """
-    OMPL SpaceInformation is extended with robot-specific functions.
-    It handles state conversion and updates the robot configuration.
+    Extend OMPL SpaceInformation with robot-specific functionality.
+
+    This includes robot configuration updates and
+    interaction with moving simulation objects.
 
     Attributes:
         robot (RobotBase): The robot instance.
-        state_space (PbiStateSpace): The custom state space.
-        object_mover (PbiObjectMover): Optional mover for updating objects.
+        state_space (PbiStateSpace): Custom state space implementation.
+        object_mover (PbiObjectMover): Optional object mover instance.
     """
 
     def __init__(self, state_space: pbi.PbiStateSpace,
-                 object_mover: pbi.PbiObjectMover) -> None:
-        """
-        The space information is initialized with the state space and
-        object mover.
+                 object_mover: pbi.PbiObjectMover = None) -> None:
 
-        Args:
-            state_space (PbiStateSpace): The robot's state space.
-            object_mover (PbiObjectMover): The object mover instance.
-        """
         super().__init__(state_space)
         self._robot = state_space._robot
         self._state_space = state_space
+        self._object_mover = object_mover
+
+    def set_object_mover(self, object_mover: pbi.PbiObjectMover) -> None:
+        """
+        The object mover is set to update moving objects in the simulation.
+
+        Args:
+            object_mover (PbiObjectMover): The object mover instance.
+        """
         self._object_mover = object_mover
 
     def set_state(self, state: ob.State) -> None:

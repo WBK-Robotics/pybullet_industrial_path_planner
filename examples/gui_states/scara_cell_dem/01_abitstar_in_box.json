@@ -1,6 +1,6 @@
 {
     "selected_obstacle": "box",
-    "planner_setup": "Robot+ Object",
+    "planner_setup": "Robot 1 + Object",
     "planner_type": "abitstar",
     "objective": "None",
     "constraint": "None",

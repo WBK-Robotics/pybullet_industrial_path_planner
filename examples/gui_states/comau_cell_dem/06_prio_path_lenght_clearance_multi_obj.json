@@ -1,8 +1,8 @@
 {
     "selected_obstacle": "",
-    "planner_setup": "2nd Solely Robot",
+    "planner_setup": "Solely Robot 2",
     "planner_type": "abitstar",
-    "objective": "joint_path_clearance_unequal_objective",
+    "objective": "prio_joint_path_clearance_multi_obj",
     "constraint": "None",
     "planning_time": 46,
     "joint_path_values": [

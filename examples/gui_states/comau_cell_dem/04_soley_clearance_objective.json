@@ -1,6 +1,6 @@
 {
     "selected_obstacle": "",
-    "planner_setup": "2nd Solely Robot",
+    "planner_setup": "Solely Robot 2",
     "planner_type": "abitstar",
     "objective": "clearance_objective",
     "constraint": "None",

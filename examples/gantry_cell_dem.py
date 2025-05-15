@@ -108,7 +108,7 @@ def setup_envirnoment(working_dir: str):
     )
 
     # Load objects.
-    pos_box = np.array([0.4, 0.3, 0.261])
+    pos_box = np.array([0.2, 0.3, 0.261])
     box = p.loadURDF(
         urdf_box, pos_box, useFixedBase=True, globalScaling=2.5
     )
@@ -258,14 +258,14 @@ def setup_planner_gui(robots, gripper, objects):
         object_mover=object_mover,
         collision_check_function=collision_check_C
     )
-    path_planner_1.name = "Robot+ Gripper+ Object"
+    path_planner_1.name = "Robot + Gripper + Object"
 
     path_planner_2 = pbi.PbiSimpleSetup(
         robot=robots[0],
         collision_check_function=collision_check_C,
         object_mover=gripper_mover
     )
-    path_planner_2.name = "Robot+ Gripper"
+    path_planner_2.name = "Robot + Gripper"
 
     path_planner_3 = pbi.PbiSimpleSetup(
         robot=robots[0],

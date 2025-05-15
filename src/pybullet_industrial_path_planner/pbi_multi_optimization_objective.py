@@ -4,21 +4,18 @@ from pybullet_industrial_path_planner import PbiSpaceInformation
 
 class PbiMultiOptimizationObjective(ob.MultiOptimizationObjective):
     """
-    Multiple robot-specific optimization objectives are combined.
+    Optimization objective based on a weighted combination of multiple
+    robot-specific cost terms.
 
-    Attributes:
-        si (PbiSpaceInformation): The robot's space information.
+    Args:
+        si (PbiSpaceInformation): Space information including robot model.
+        weighted_objective_list (list): List of (objective, weight) pairs,
+            where each objective is a class and weight is a float.
     """
 
     def __init__(self, si: PbiSpaceInformation,
                  weighted_objective_list: list) -> None:
-        """
-        The multi-objective is initialized with weighted objectives.
 
-        Args:
-            si (PbiSpaceInformation): The robot's space information.
-            weighted_objective_list (list): List of (objective, weight) pairs.
-        """
         super().__init__(si)
         self._si = si
         # Each objective is added with its associated weight.

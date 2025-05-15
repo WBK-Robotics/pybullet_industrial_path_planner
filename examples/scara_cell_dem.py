@@ -282,20 +282,20 @@ def setup_planner_gui(robots, objects):
         object_mover=object_mover,
         collision_check_function=collision_check_C
     )
-    path_planner_1.name = "Robot+ Object"
+    path_planner_1.name = "Robot 1 + Object"
 
 
     path_planner_2 = pbi.PbiSimpleSetup(
         robot=robots[0],
         collision_check_function=collision_check_C
     )
-    path_planner_2.name = "Solely Robot"
+    path_planner_2.name = "Solely Robot 1"
 
     path_planner_3 = pbi.PbiSimpleSetup(
         robot=robots[1],
         collision_check_function=collision_check_D
     )
-    path_planner_3.name = "2nd Solely Robot"
+    path_planner_3.name = "Solely Robot 2"
 
     # -------------------------------
     # GUI Setup

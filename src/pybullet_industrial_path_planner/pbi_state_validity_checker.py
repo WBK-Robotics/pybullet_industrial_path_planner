@@ -19,23 +19,12 @@ class PbiStateValidityChecker(ob.StateValidityChecker):
                  collision_check_function,
                  constraint_function=None,
                  clearance_function=None) -> None:
-        """
-        The validity checker is initialized.
 
-        Args:
-            si (PbiSpaceInformation): The space information.
-            collision_check_function (callable): Function to perform collision
-                checks.
-            constraint_function (callable, optional): Function to check
-                additional constraints.
-            clearance_function (callable, optional): Function returning a
-                clearance value.
-        """
         super().__init__(si)
         self._si = si
-        self.collision_check_function = collision_check_function
-        self.constraint_function = constraint_function
-        self.clearance_function = clearance_function
+        self._collision_check_function = collision_check_function
+        self._constraint_function = constraint_function
+        self._clearance_function = clearance_function
 
     def isValid(self, state: ob.State) -> bool:
         """
@@ -50,10 +39,10 @@ class PbiStateValidityChecker(ob.StateValidityChecker):
         """
         # Clearance is computed even if not used directly.
         self.clearance(state)
-        if self.constraint_function:
-            if not self.constraint_function():
+        if self._constraint_function:
+            if not self._constraint_function():
                 return False
-        if not self.collision_check_function():
+        if not self._collision_check_function():
             return False
         return True
 
@@ -69,7 +58,37 @@ class PbiStateValidityChecker(ob.StateValidityChecker):
             a higher cost.
         """
         self._si.set_state(state)
-        if self.clearance_function is None:
+        if self._clearance_function is None:
             return None
         else:
-            return self.clearance_function()
+            return self._clearance_function()
+
+    def set_collision_check_function(self, collision_check_function):
+        """
+        Set the function to check for collisions.
+
+        Args:
+            collision_check_function (callable): The function to check
+                for collisions.
+        """
+        self._collision_check_function = collision_check_function
+
+    def set_constraint_function(self, constraint_function):
+        """
+        Set the function to check for constraints.
+
+        Args:
+            constraint_function (callable): The function to check
+                for constraints.
+        """
+        self._constraint_function = constraint_function
+
+    def set_clearance_function(self, clearance_function):
+        """
+        Set the function to compute clearance.
+
+        Args:
+            clearance_function (callable): The function to compute
+                clearance.
+        """
+        self._clearance_function = clearance_function

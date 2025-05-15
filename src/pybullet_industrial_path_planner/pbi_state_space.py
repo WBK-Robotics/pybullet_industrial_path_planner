@@ -5,27 +5,38 @@ from pybullet_industrial import (RobotBase, JointPath)
 
 class PbiStateSpace(ob.RealVectorStateSpace):
     """
-    An OMPL state space that represents the robot's joint configuration.
-    The state space bounds are based on the robot's joint limits.
+    Custom real vector state space for robot joint configurations.
+
+    Bounds are defined based on the robot's joint limits. The state space
+    supports conversion between OMPL states and joint configurations.
 
     Attributes:
         robot (RobotBase): The robot instance.
-        joint_order (list): Ordered list of movable joints.
+        joint_order (list): Ordered list of movable joint names.
     """
 
     def __init__(self, robot: RobotBase) -> None:
-        """
-        The state space is initialized using the robot's joint limits.
 
-        Args:
-            robot (RobotBase): The robot instance with joint information.
-        """
         self._robot = robot
         self._joint_order: list = robot.get_moveable_joints()[0]
         lower_limit, upper_limit = robot.get_joint_limits()
         num_dims: int = len(self._joint_order)
         super().__init__(num_dims)
         self.setBounds(lower_limit, upper_limit)
+
+    def setBounds(self, lower_limit: list, upper_limit: list) -> None:
+        """
+        The state space bounds are set using the provided joint limits.
+
+        Args:
+            lower_limit (list): Lower limits for each joint.
+            upper_limit (list): Upper limits for each joint.
+        """
+        bounds = ob.RealVectorBounds(self.getDimension())
+        for i, joint in enumerate(self._joint_order):
+            bounds.setLow(i, lower_limit[joint])
+            bounds.setHigh(i, upper_limit[joint])
+        super().setBounds(bounds)
 
     def list_to_state(self, joint_values: list) -> ob.State:
         """
@@ -66,20 +77,6 @@ class PbiStateSpace(ob.RealVectorStateSpace):
             list: Ordered joint values as per self._joint_order.
         """
         return [joint_dict[joint] for joint in self._joint_order]
-
-    def setBounds(self, lower_limit: list, upper_limit: list) -> None:
-        """
-        The state space bounds are set using the provided joint limits.
-
-        Args:
-            lower_limit (list): Lower limits for each joint.
-            upper_limit (list): Upper limits for each joint.
-        """
-        bounds = ob.RealVectorBounds(self.getDimension())
-        for i, joint in enumerate(self._joint_order):
-            bounds.setLow(i, lower_limit[joint])
-            bounds.setHigh(i, upper_limit[joint])
-        super().setBounds(bounds)
 
     def path_to_joint_path(self, path: ob.Path,
                            interpolation_precision: float) -> JointPath:

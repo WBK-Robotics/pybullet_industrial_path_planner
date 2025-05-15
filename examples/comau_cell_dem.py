@@ -284,11 +284,11 @@ def setup_planner_gui(robots, gripper, objects):
         """Returns True if collisions are absent."""
         return all([collision_checker_D.is_collision_free()])
 
-    def constraint_function() -> bool:
+    def endeffector_upright_robot_1() -> bool:
         """Returns True if the end-effector is upright."""
         return all([check_endeffector_upright(robots[0])])
 
-    def constraint_function_robot_D() -> bool:
+    def endeffector_upright_robot_2() -> bool:
         """Returns True if the end-effector is upright."""
         return all([check_endeffector_upright(robots[1])])
 
@@ -305,14 +305,14 @@ def setup_planner_gui(robots, gripper, objects):
     objectives_equal_weights.append((joint_path_length_objective, 0.5))
     objectives_equal_weights.append((clearance_objective, 0.5))
 
-    def joint_path_clearance_objective(si):
+    def equal_joint_path_clearance_multi_obj(si):
         return pbi.PbiMultiOptimizationObjective(si, objectives_equal_weights)
 
     objectives_unequal_weights = []
     objectives_unequal_weights.append((joint_path_length_objective, 0.95))
     objectives_unequal_weights.append((clearance_objective, 1 - 0.95))
 
-    def joint_path_clearance_unequal_objective(si):
+    def prio_joint_path_clearance_multi_obj(si):
         return pbi.PbiMultiOptimizationObjective(si, objectives_unequal_weights)
 
 
@@ -368,7 +368,7 @@ def setup_planner_gui(robots, gripper, objects):
         collision_check_function=collision_check_C,
         clearance_function=get_motor_clearance
     )
-    path_planner_1.name = "Robot+ Gripper+ Object"
+    path_planner_1.name = "Robot 1 + Gripper + Object"
 
     path_planner_2 = pbi.PbiSimpleSetup(
         robot=robots[0],
@@ -376,21 +376,21 @@ def setup_planner_gui(robots, gripper, objects):
         collision_check_function=collision_check_C,
         # clearance_function=get_robot_clearance
     )
-    path_planner_2.name = "Robot+ Gripper"
+    path_planner_2.name = "Robot 1 + Gripper"
 
     path_planner_3 = pbi.PbiSimpleSetup(
         robot=robots[0],
         collision_check_function=collision_check_C,
         clearance_function=get_robot_clearance
     )
-    path_planner_3.name = "Solely Robot"
+    path_planner_3.name = "Solely Robot 1"
 
     path_planner_4 = pbi.PbiSimpleSetup(
         robot=robots[1],
         collision_check_function=collision_check_D,
         clearance_function=get_robot_clearance
     )
-    path_planner_4.name = "2nd Solely Robot"
+    path_planner_4.name = "Solely Robot 2"
 
     # -------------------------------
     # GUI Setup
@@ -403,11 +403,13 @@ def setup_planner_gui(robots, gripper, objects):
         abitstar, bitstar, rrt, rrtstar, informed_rrtstar, sbl,
         fmt, bfmt, lbkpiece1, rrtconnect, aitstar, rrtsharp]
     objective_list = [
-        None, clearance_objective, endeffector_path_length_objective,
+        None, clearance_objective,
+        equal_joint_path_clearance_multi_obj, prio_joint_path_clearance_multi_obj,
         joint_path_length_objective,
-        joint_path_clearance_objective, joint_path_clearance_unequal_objective
+        endeffector_path_length_objective
     ]
-    constraint_list = [None, constraint_function, constraint_function_robot_D]
+    constraint_list = [None, endeffector_upright_robot_1,
+                       endeffector_upright_robot_2]
 
     # Create and run the GUI.
     root = tk.Tk()
@@ -458,7 +460,7 @@ if __name__ == "__main__":
     transformed_g_code = transform_g_code(se3_g_code)
 
     exportfile = os.path.join(
-        working_dir, 'g_codes', 'comau_cell_dem.mpf'
+        working_dir, 'g_codes', 'comau_wsk_cell_dem.mpf'
     )
     pi.GCodeLogger.write_g_code(
         transformed_g_code, exportfile, {}, postfix="M30\n"
