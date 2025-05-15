@@ -1,0 +1,70 @@
+name: Python package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    # === Install OMPL ===
+    - name: Install OMPL dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake pkg-config libboost-all-dev \
+          libeigen3-dev libode-dev python3-dev python3-pybind11
+
+    - name: Clone and build OMPL
+      run: |
+        git clone https://github.com/ompl/ompl.git
+        cd ompl
+        mkdir -p build && cd build
+        cmake .. -DPYTHON_BINDINGS=ON
+        make -j$(nproc)
+        sudo make install
+
+    # === Install pybullet_industrial ===
+    - name: Install pybullet_industrial dependency
+      run: |
+        git clone --branch pbi_planner_allignment https://github.com/WBK-Robotics/pybullet_industrial.git
+        pip install ./pybullet_industrial/src
+
+    # === Install your package ===
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest coverage
+        pip install -e .   # assumes setup.py is in repo root
+
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Test with pytest and create coverage report
+      run: |
+        coverage run --source pybullet_industrial -m pytest
+        coverage xml
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        fail_ci_if_error: true
+        verbose: true
