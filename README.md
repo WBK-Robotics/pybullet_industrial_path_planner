@@ -33,10 +33,9 @@
 Ensure that the latest version from the main branch is installed:
 
 ```bash
-wget https://github.com/WBK-Robotics/pybullet_industrial/archive/refs/heads/main.zip
-unzip main.zip
-cd pybullet_industrial-main
-pip install .
+git clone https://github.com/WBK-Robotics/pybullet_industrial.git
+cd pybullet_industrial
+pip install src/
 ```
 
 ### 2. Install OMPL with Python bindings
