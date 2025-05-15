@@ -56,7 +56,7 @@ class TestPbiSimpleSetup(unittest.TestCase):
         self.assertTrue(solved)
         self.assertIsNotNone(joint_path)
         num_joints = len(self.joint_order)
-        expected_states = max(2, int(1.0 / 0.01))
+        expected_states = 2
         self.assertEqual(joint_path.joint_order, self.joint_order)
         self.assertEqual(joint_path.joint_values.shape,
                          (num_joints, expected_states))

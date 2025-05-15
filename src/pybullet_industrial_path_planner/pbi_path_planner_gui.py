@@ -64,7 +64,7 @@ class PbiPathPlannerGUI:
 
     def __init__(self, root: tk.Tk, planner_setup, obstacles,
                  planner_list, objective_list, constraint_list,
-                 gui_states_dir: str, draw_offset: np.array) -> None:
+                 gui_states_dir: str, draw_offset = None) -> None:
         self.root: tk.Tk = root
 
         # Redirect console output to GUI widget.
@@ -123,7 +123,7 @@ class PbiPathPlannerGUI:
         self.current_box_size = [0.5, 0.5, 0.05]
 
         # Initialize GUI state folder and variables.
-        self.gui_states_folder = os.path.join(gui_states_dir, 'gui_states')
+        self.gui_states_folder = os.path.join(gui_states_dir)
         os.makedirs(self.gui_states_folder, exist_ok=True)
         self.saved_state_var = tk.StringVar(value="")
         self.gui_state_options = []
@@ -1070,9 +1070,10 @@ class PbiPathPlannerGUI:
                 if self.object_mover:
                     pos, ori = self.robot.get_endeffector_pose()
                     self.object_mover.match_moving_objects(pos, ori)
-                time.sleep(0.03)
+                time.sleep(0.1)
                 # Draw excecution path
-                if self.draw_path:
+                draw_path = self.draw_path.get()
+                if draw_path:
                     pos, ori = self.robot.get_endeffector_pose()
                     pos = pos + self.draw_offset
                     draw_coordinate_system(pos, ori)
