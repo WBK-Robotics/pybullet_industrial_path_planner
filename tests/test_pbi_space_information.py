@@ -1,39 +1,31 @@
-import os
 import unittest
+import os
 import numpy as np
 import pybullet as p
 import pybullet_data
-from ompl import base as ob
 import pybullet_industrial as pi
 import pybullet_industrial_path_planner as pbi
 
 
-def collision_true():
-    return True
-
-
-def collision_false():
-    return False
-
-
-def constraint_true():
-    return True
-
-
-def constraint_false():
-    return False
-
-
-def clearance_const():
-    return 0.5
-
-
-class TestPbiStateValidityChecker(unittest.TestCase):
+class DummyObjectMover:
     """
-    Unit tests for PbiStateValidityChecker using the real robot
-    from the comau_nj290 example.
+    Dummy object mover to verify pose forwarding from SpaceInformation.
     """
-    def setUp(self) -> None:
+    def __init__(self):
+        self.received_position = None
+        self.received_orientation = None
+
+    def match_moving_objects(self, position, orientation):
+        self.received_position = position
+        self.received_orientation = orientation
+
+
+class TestPbiSpaceInformation(unittest.TestCase):
+    """
+    Unit tests for the PbiSpaceInformation class.
+    """
+
+    def setUp(self):
         p.connect(p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         working_dir = os.path.dirname(__file__)
@@ -42,70 +34,51 @@ class TestPbiStateValidityChecker(unittest.TestCase):
             parent_dir, "examples", "robot_descriptions", "comau_nj290",
             "comau_nj290_robotNC.urdf"
         )
-        start_pos = np.array([0, 0, 0])
-        start_ori = p.getQuaternionFromEuler([0, 0, 0])
-        self.robot = pi.RobotBase(robot_urdf, start_pos, start_ori)
+        position = np.array([0, 0, 0])
+        orientation = p.getQuaternionFromEuler([0, 0, 0])
+        self.robot = pi.RobotBase(robot_urdf, position, orientation)
         self.state_space = pbi.PbiStateSpace(self.robot)
-        # Create space information without an object mover.
-        self.si = pbi.PbiSpaceInformation(self.state_space, None)
-        dim = self.state_space.getDimension()
-        self.joint_vals = [0.1 * (i + 1) for i in range(dim)]
-        self.state = self.state_space.list_to_state(self.joint_vals)
+        self.si = pbi.PbiSpaceInformation(self.state_space)
 
-    def tearDown(self) -> None:
+        # Generate a valid state for testing
+        joint_values = [0.1] * self.state_space.getDimension()
+        self.state = self.state_space.list_to_state(joint_values)
+
+    def tearDown(self):
         p.disconnect()
 
-    def test_isValid_all_true(self):
+    def test_set_state_updates_robot_joints(self):
         """
-        isValid returns True when collision and constraints pass.
+        The robot joint positions are updated when a state is set.
         """
-        checker = pbi.PbiStateValidityChecker(
-            self.si,
-            collision_check_function=collision_true,
-            constraint_function=constraint_true,
-            clearance_function=None
-        )
-        valid = checker.isValid(self.state)
-        self.assertTrue(valid)
+        self.si.set_state(self.state)
+        current_pos = self.robot.get_joint_position()
+        expected_pos = dict(zip(self.state_space._joint_order,
+                                self.state_space.state_to_list(self.state)))
+        for key in expected_pos:
+            self.assertAlmostEqual(current_pos[key], expected_pos[key], places=5)
 
-    def test_isValid_constraint_fail(self):
+    def test_set_object_mover(self):
         """
-        isValid returns False when constraint_function fails.
+        The object mover is correctly set and stored.
         """
-        checker = pbi.PbiStateValidityChecker(
-            self.si,
-            collision_check_function=collision_true,
-            constraint_function=constraint_false,
-            clearance_function=None
-        )
-        valid = checker.isValid(self.state)
-        self.assertFalse(valid)
+        mover = DummyObjectMover()
+        self.si.set_object_mover(mover)
+        self.assertIs(self.si._object_mover, mover)
 
-    def test_isValid_collision_fail(self):
+    def test_set_state_triggers_object_mover(self):
         """
-        isValid returns False when collision_check_function fails.
+        The object mover receives the updated robot pose when set_state is called.
         """
-        checker = pbi.PbiStateValidityChecker(
-            self.si,
-            collision_check_function=collision_false,
-            constraint_function=constraint_true,
-            clearance_function=None
-        )
-        valid = checker.isValid(self.state)
-        self.assertFalse(valid)
+        mover = DummyObjectMover()
+        self.si.set_object_mover(mover)
+        self.si.set_state(self.state)
 
-    def test_clearance(self):
-        """
-        clearance returns the value from clearance_function.
-        """
-        checker = pbi.PbiStateValidityChecker(
-            self.si,
-            collision_check_function=collision_true,
-            constraint_function=constraint_true,
-            clearance_function=clearance_const
-        )
-        cl = checker.clearance(self.state)
-        self.assertEqual(cl, 0.5)
+        self.assertIsNotNone(mover.received_position)
+        self.assertIsNotNone(mover.received_orientation)
+        # Optional: check that values are numerically valid
+        self.assertEqual(len(mover.received_position), 3)
+        self.assertEqual(len(mover.received_orientation), 4)
 
 
 if __name__ == '__main__':

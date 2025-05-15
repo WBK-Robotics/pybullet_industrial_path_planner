@@ -105,6 +105,49 @@ class TestPbiStateValidityChecker(unittest.TestCase):
         cl = checker.clearance(self.state)
         self.assertEqual(cl, 0.5)
 
+    def test_clearance_none(self):
+        """
+        clearance returns None if no clearance_function is set.
+        """
+        checker = pbi.PbiStateValidityChecker(
+            self.si,
+            collision_check_function=collision_true
+        )
+        self.assertIsNone(checker.clearance(self.state))
+
+    def test_set_collision_check_function(self):
+        """
+        Verify collision check function can be updated dynamically.
+        """
+        checker = pbi.PbiStateValidityChecker(
+            self.si,
+            collision_check_function=collision_true
+        )
+        checker.set_collision_check_function(lambda: False)
+        self.assertFalse(checker.isValid(self.state))
+
+    def test_set_constraint_function(self):
+        """
+        Verify constraint function can be updated dynamically.
+        """
+        checker = pbi.PbiStateValidityChecker(
+            self.si,
+            collision_check_function=collision_true
+        )
+        checker.set_constraint_function(lambda: False)
+        self.assertFalse(checker.isValid(self.state))
+
+    def test_set_clearance_function(self):
+        """
+        Verify clearance function can be updated dynamically.
+        """
+        checker = pbi.PbiStateValidityChecker(
+            self.si,
+            collision_check_function=collision_true
+        )
+        checker.set_clearance_function(lambda: 0.9)
+        self.assertEqual(checker.clearance(self.state), 0.9)
+
 
 if __name__ == '__main__':
     unittest.main()
