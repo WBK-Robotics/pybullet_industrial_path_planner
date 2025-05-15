@@ -1,10 +1,10 @@
-name: Python package
+name: CI with OMPL
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -12,44 +12,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.11"]  # Must match OMPL wheel version
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-    # === Install OMPL ===
-    - name: Install OMPL dependencies
+    - name: Install OMPL prebuilt wheel
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake pkg-config libboost-all-dev \
-          libeigen3-dev libode-dev python3-dev python3-pybind11
+        wget https://github.com/ompl/ompl/releases/download/prerelease/ompl-1.7.0-cp311-cp311-manylinux_2_28_x86_64.whl
+        pip install ompl-1.7.0-cp311-cp311-manylinux_2_28_x86_64.whl
 
-    - name: Clone and build OMPL
-      run: |
-        git clone https://github.com/ompl/ompl.git
-        cd ompl
-        mkdir -p build && cd build
-        cmake .. -DPYTHON_BINDINGS=ON
-        make -j$(nproc)
-        sudo make install
-
-    # === Install pybullet_industrial ===
     - name: Install pybullet_industrial dependency
       run: |
         git clone --branch pbi_planner_allignment https://github.com/WBK-Robotics/pybullet_industrial.git
         pip install ./pybullet_industrial/src
 
-    # === Install your package ===
-    - name: Install Python dependencies
+    - name: Install project and dev dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest coverage
-        pip install -e .   # assumes setup.py is in repo root
+        pip install -e .
 
     - name: Lint with flake8
       run: |
@@ -64,7 +52,7 @@ jobs:
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ secrets.CODECOV_TOKEN }}  # Not required for public repos
         files: ./coverage.xml
         fail_ci_if_error: true
         verbose: true
