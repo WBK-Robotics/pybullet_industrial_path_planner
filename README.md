@@ -2,8 +2,6 @@
 
 **PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments. It integrates the Open Motion Planning Library and provides tools to define, execute, and validate motion plans under geometric constraints.
 
-![Comau Cell Planning Demo](./docs/comau_cell.gif)
-
 ## Features
 
 * **OMPL Integration**: Direct access to OMPL through a compatible interface and tailored extensions.
@@ -27,6 +25,9 @@
 * **Graphical User Interface**: Provides practical accessibility through visual interaction.
 
 * **G-code Generation**: Tools for logging or converting solution paths into deployable machine code.
+
+### Example: Comau NJ290-3.0 in a cell environment
+![Comau Cell Planning Demo](./docs/comau_cell.gif)
 
 ## Installation
 
