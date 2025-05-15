@@ -1,80 +1,62 @@
 # PyBullet Industrial Path Planner
 
-**PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments. It integrates OMPL planners and provides tools to define, execute, and validate motion plans under geometric constraints.
+**PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments. It integrates the Open Motion Planning Library and provides tools to define, execute, and validate motion plans under geometric constraints.
 
 ## Features
 
-* **OMPL Integration**: Supports standard OMPL planners such as RRT\*, Informed RRT\*.
-* **Custom State Space**: Joint-based space with robot-specific bounds derived from URDF.
-* **Collision Checking**: Uses PyBullet's contact engine to detect collisions.
-* **Constraint Evaluation**: Optional application-specific constraints.
-* **Clearance Computation**: Computes minimum distance to obstacles.
-* **Optimization Objectives**: Includes clearance, joint length, and end-effector path length.
-* **Multi-Objective Planning**: Weighted combination of objectives.
-* **Simple Setup API**: High-level interface to define problems and retrieve paths.
-* **Object Support**: Simulate grasped tools or external objects.
-* **G-code Generation**: Tools for structured output and code export.
+* **OMPL Integration**: Direct access to OMPL through a compatible interface and tailored extensions.
+
+* **Serial-Kinematic Chains**: Builds joint-based configuration spaces with robot-specific bounds derived from URDF models.
+
+* **Object Support**: Supports planning with attached tools and grasped external objects during configuration sampling.
+
+* **Collision Checking**: Enables detailed management of internal, external, and explicitly allowed collision pairs.
+
+* **Constraint Evaluation**: Supports optional application-specific constraints through the state validity module.
+
+* **Clearance Computation**: Calculates minimum distances to obstacles using pairwise collision checks.
+
+* **Optimization Objectives**: Includes objectives for clearance, joint-space distance, and end-effector motion.
+
+* **Multi-Objective Planning**: Supports weighted combinations of multiple optimization criteria.
+
+* **Simple Setup API**: High-level interface for defining motion problems and retrieving feasible solutions.
+
+* **Graphical User Interface**: Provides practical accessibility through visual interaction.
+
+* **G-code Generation**: Tools for logging or converting solution paths into deployable machine code.
 
 ## Installation
 
+### 1. Install PyBullet Industrial
+
+Ensure that the latest version from the main branch is installed:
+
 ```bash
-pip install pybullet
-# OMPL must be built separately with Python bindings
-git clone https://github.com/your-org/pybullet_industrial_path_planner
+wget https://github.com/WBK-Robotics/pybullet_industrial/archive/refs/heads/main.zip
+unzip main.zip
+cd pybullet_industrial-main
+pip install .
+```
+
+### 2. Install OMPL with Python bindings
+
+To install OMPL with Python bindings, follow the official instructions at:
+[https://ompl.kavrakilab.org/python.html](https://ompl.kavrakilab.org/python.html).
+
+For easy setup, we recommend using the prebuilt Python bindings from the [OMPL development build](https://github.com/ompl/ompl/releases/tag/prerelease).
+
+> Note: Prebuilt binaries are currently available for Linux and macOS only.
+> Windows users are advised to use WSL (Windows Subsystem for Linux) to install OMPL.
+
+### 3. Install the Path Planner Package
+
+Clone and install the path planner package:
+
+```bash
+git clone https://github.com/WBK-Robotics/pybullet_industrial_path_planner.git
 cd pybullet_industrial_path_planner
-# Optional setup script here
-```
-
-## Dependencies
-
-* [PyBullet](https://github.com/bulletphysics/bullet3)
-* [OMPL](https://ompl.kavrakilab.org/)
-* [NumPy](https://numpy.org/)
-* [PyBullet Industrial](https://github.com/wbk-path/pybullet_industrial)
-
-## Example Usage
-
-```python
-from pybullet_industrial_path_planner import PbiSimpleSetup
-from pybullet_industrial import RobotBase, CollisionChecker
-
-# Initialize PyBullet, robot, and checker
-robot = RobotBase("robot.urdf", position=[0,0,0])
-checker = CollisionChecker()
-checker.set_safe_state()
-
-# Create planning setup
-setup = PbiSimpleSetup(
-    robot,
-    collision_check_function=checker.is_collision_free
-)
-
-# Define joint configs
-goal = robot.get_joint_position()
-start = robot.get_joint_position()
-
-# Solve
-solved, path = setup.plan_start_goal(start, goal)
-if solved:
-    path.plot()
-```
-
-## Folder Structure
-
-```
-pybullet_industrial_path_planner/
-├── pbi_state_space.py
-├── pbi_space_information.py
-├── pbi_validity_checker.py
-├── pbi_object_mover.py
-├── pbi_simple_setup.py
-├── objectives/
-│   ├── pbi_clearance_objective.py
-│   ├── pbi_endeffector_length_objective.py
-│   └── ...
-├── tests/
-├── examples/
-├── docs/
+pip install src/
 ```
 
 ## Academic Origin
