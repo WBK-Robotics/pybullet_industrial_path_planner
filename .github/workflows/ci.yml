@@ -1,0 +1,59 @@
+name: Python package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install OMPL prebuilt wheel
+      run: |
+        wget https://github.com/ompl/ompl/releases/download/prerelease/ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
+        pip install ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
+
+    - name: Clone and install pybullet_industrial
+      run: |
+        git clone --branch pbi_planner_allignment https://github.com/WBK-Robotics/pybullet_industrial.git
+        pip install ./pybullet_industrial/src
+
+    - name: Install remaining dependencies
+      run: |
+        pip install flake8 pytest coverage
+        pip install src/
+
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Test with pytest and create coverage report
+      run: |
+        coverage run --source pybullet_industrial -m pytest
+        coverage xml
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        fail_ci_if_error: true
+        verbose: true
