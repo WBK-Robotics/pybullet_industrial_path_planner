@@ -12,7 +12,7 @@
 
 * **Collision Checking**: Enables detailed management of internal, external, and explicitly allowed collision pairs.
 
-* **Constraint Evaluation**: Supports optional application-specific constraints through the state validity module.
+* **Task Constraints**: Supports additional application-specific constraints through the state validity module.
 
 * **Clearance Computation**: Calculates minimum distances to obstacles using pairwise collision checks.
 
