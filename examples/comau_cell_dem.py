@@ -260,12 +260,7 @@ def setup_planner_gui(robots, gripper, objects):
     # Clearance object for both robots
     robot_clearance = pi.CollisionChecker([robots[0].urdf,
                                            robots[1].urdf])
-    robot_clearance.remove_link_id(robots[0].urdf, -1)
-    robot_clearance.remove_link_id(robots[0].urdf, 0)
-    robot_clearance.remove_link_id(robots[0].urdf, 1)
-    robot_clearance.remove_link_id(robots[0].urdf, 2)
-    robot_clearance.remove_link_id(robots[0].urdf, 3)
-    robot_clearance.remove_link_id(robots[0].urdf, 4)
+
 
     robot_clearance.make_robot_static(robots[0].urdf)
     robot_clearance.make_robot_static(robots[1].urdf)
@@ -356,10 +351,10 @@ def setup_planner_gui(robots, gripper, objects):
         return og.LBKPIECE1(si)
 
     def get_motor_clearance():
-        return motor_clearance.get_external_distance(3)
+        return motor_clearance.get_external_distance(3) or 3
 
     def get_robot_clearance():
-        return robot_clearance.get_external_distance(0.5)
+        return robot_clearance.get_external_distance(0.5) or 0.5
 
     # Initialize planner setups.
     path_planner_1 = pbi.PbiSimpleSetup(
