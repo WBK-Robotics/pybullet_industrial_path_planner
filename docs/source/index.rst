@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to the PyBullet Industrial Path Planner documentation!
-==============================================
+==============================================================
 
 **PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments.
 It integrates the Open Motion Planning Library and provides tools to define, execute, and validate motion plans under geometric constraints.
@@ -27,7 +27,7 @@ Features
 Example: Comau NJ290-3.0 in a Cell Environment
 ----------------------------------------------
 
-.. image:: ./docs/comau_cell.gif
+.. image:: images/comau_cell.gif
    :alt: Comau Cell Planning Demo
     :align: center
 
@@ -37,4 +37,5 @@ Example: Comau NJ290-3.0 in a Cell Environment
    :caption: Contents:
 
    how_to_use
+   code_docu
 

@@ -130,3 +130,8 @@ dmypy.json
 kuka_robot.png
 
 igus.mp4
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/pybullet_industrial_path_planner.iml
+.idea/vcs.xml

@@ -2,7 +2,6 @@ from ompl import base as ob
 import sys
 from pybullet_industrial_path_planner import PbiSpaceInformation
 
-
 class PbiClearanceObjective(ob.StateCostIntegralObjective):
     """
     Optimization objective based on state clearance.

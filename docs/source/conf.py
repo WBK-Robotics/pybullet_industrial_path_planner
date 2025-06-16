@@ -3,6 +3,20 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# -- Path setup --------------------------------------------------------------
+
+import sys
+import os
+import mock
+
+MOCK_MODULES = ['ompl', 'ompl.base']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
+
+sys.path.insert(0, os.path.abspath('../../src'))
+sys.setrecursionlimit(1500)
+
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -36,7 +50,7 @@ exclude_patterns = []
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'style_nav_header_background': '#009682', 'logo_only': True}
-html_logo = "header_logo.png"
+html_logo = "images/header_logo.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

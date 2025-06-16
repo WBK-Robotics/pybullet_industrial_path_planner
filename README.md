@@ -27,7 +27,7 @@
 * **G-Code Generation**: Tools for logging or converting solution paths into deployable machine code.
 
 ### Example: Comau NJ290-3.0 in a Cell Environment
-![Comau Cell Planning Demo](./docs/comau_cell.gif)
+![Comau Cell Planning Demo](./docs/images/comau_cell.gif)
 
 ## Installation
 
