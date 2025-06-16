@@ -25,6 +25,22 @@ Installation
 
       Prebuilt binaries are currently available for Linux and macOS only.
       Windows users are advised to use WSL (Windows Subsystem for Linux) to install OMPL.
+      This includes the following steps:
+        Install WSL and Ubuntu
+            wsl --install -d Ubuntu
+        Update and install Python
+            sudo apt update && sudo apt upgrade -y
+
+            sudo apt install python3 python3-venv python3-pip -y
+        Create and activate a virtual environment
+            python3 -m venv ompl_venv
+
+            source ompl_venv/bin/activate
+        Install the prebuilt OMPL Python bindings
+            wget `https://github.com/\.../ompl-<version>.whl`
+
+            pip install ompl-<version>.whl
+
 
 3. **Install the Path Planner Package**
 
