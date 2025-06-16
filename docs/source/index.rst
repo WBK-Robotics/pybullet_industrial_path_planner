@@ -6,6 +6,10 @@
 Welcome to the PyBullet Industrial Path Planner documentation!
 ==============================================================
 
+.. image:: images/PBI_PP_Logo.gif
+   :alt: Comau Cell Planning Demo
+    :align: center
+
 **PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments.
 It integrates the Open Motion Planning Library and provides tools to define, execute, and validate motion plans under geometric constraints.
 
