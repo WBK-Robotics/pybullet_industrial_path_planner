@@ -8,7 +8,6 @@ import pybullet as p
 import pybullet_industrial as pi
 from pybullet_industrial.utility import draw_coordinate_system
 
-
 # Constants for joint and workspace increments
 JOINT_INCREMENT: float = 0.1
 WORKSPACE_INCREMENT: float = 0.1  # Increment for workspace values
