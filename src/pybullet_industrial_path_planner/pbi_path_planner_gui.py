@@ -275,7 +275,7 @@ class PbiPathPlannerGUI:
         Args:
             parent (tk.Frame): Parent frame to contain the widget.
         """
-        joints_frame = tk.LabelFrame(parent, text="Joint Space",
+        joints_frame = tk.LabelFrame(parent, text="Joint Space Control",
                                      padx=3, pady=3)
         joints_frame.grid(row=0, column=0, padx=3, pady=3, sticky="nsew")
         # Update button to apply manual joint value changes.
@@ -357,7 +357,8 @@ class PbiPathPlannerGUI:
         Args:
             parent (tk.Frame): Parent frame to contain the widget.
         """
-        obstacle_frame = tk.LabelFrame(parent, text="Obstacle", padx=3, pady=3)
+        obstacle_frame = tk.LabelFrame(parent, text="Obstacle Control",
+                                       padx=3, pady=3)
         obstacle_frame.grid(row=0, column=2, padx=3, pady=3, sticky="nsew")
         tk.Label(obstacle_frame, text="Select").grid(
             row=0, column=0, sticky="w", padx=2, pady=1
@@ -404,7 +405,7 @@ class PbiPathPlannerGUI:
                        padx=3, pady=3, sticky="ew")
         planner_frame = tk.Frame(mid_frame)
         planner_frame.grid(row=0, column=0, padx=3, pady=3, sticky="w")
-        tk.Label(planner_frame, text="Setup:").grid(
+        tk.Label(planner_frame, text="Simple Setup:").grid(
             row=0, column=0, sticky="w"
         )
         tk.OptionMenu(
@@ -413,7 +414,7 @@ class PbiPathPlannerGUI:
             *self.planner_mappings.keys(),
             command=self.update_selected_planner
         ).grid(row=0, column=1, padx=2)
-        tk.Label(planner_frame, text="Type:").grid(
+        tk.Label(planner_frame, text="Planner Type:").grid(
             row=0, column=2, sticky="w"
         )
         tk.OptionMenu(
@@ -422,7 +423,7 @@ class PbiPathPlannerGUI:
             *self.planner_type_mapping.keys(),
             command=self.update_planner_type
         ).grid(row=0, column=3, padx=2)
-        tk.Label(planner_frame, text="Objective:").grid(
+        tk.Label(planner_frame, text="Optimization Objective:").grid(
             row=0, column=4, sticky="w"
         )
         tk.OptionMenu(
@@ -431,7 +432,7 @@ class PbiPathPlannerGUI:
             *self.objective_mapping.keys(),
             command=self.update_objective
         ).grid(row=0, column=5, padx=2)
-        tk.Label(planner_frame, text="Constraints:").grid(
+        tk.Label(planner_frame, text="Additional Constraint:").grid(
             row=0, column=6, sticky="w"
         )
         tk.OptionMenu(
@@ -440,21 +441,53 @@ class PbiPathPlannerGUI:
             *self.constraint_mapping.keys(),
             command=self.update_constraints
         ).grid(row=0, column=7, padx=2)
-        # New Checkbutton for Simplify option
+
+    def _create_bottom_frame(self) -> None:
+        """
+        Creates the bottom frame with path control buttons, options,
+        planning time slider, and status indicators.
+        """
+        bottom_frame = tk.Frame(self.root)
+        bottom_frame.grid(row=2, column=0, columnspan=2,
+                          padx=3, pady=3, sticky="ew")
+
+        # Button group
+        button_frame = tk.Frame(bottom_frame)
+        button_frame.pack(side=tk.LEFT, padx=5)
+        tk.Button(
+            button_frame, text="Start", command=self.set_as_start, width=8
+        ).grid(row=0, column=0, padx=3, pady=3)
+        tk.Button(
+            button_frame, text="Goal", command=self.set_as_goal, width=8
+        ).grid(row=0, column=1, padx=3, pady=3)
+        tk.Button(
+            button_frame, text="Plan", command=self.plan, width=8
+        ).grid(row=0, column=2, padx=3, pady=3)
+        tk.Button(
+            button_frame, text="Run", command=self.run, width=8
+        ).grid(row=0, column=3, padx=3, pady=3)
+        tk.Button(
+            button_frame, text="Exit", command=self.root.quit, width=8
+        ).grid(row=0, column=4, padx=3, pady=3)
+
+        # Option group
+        option_frame = tk.Frame(bottom_frame)
+        option_frame.pack(side=tk.LEFT, padx=15)
         tk.Checkbutton(
-            planner_frame,
+            option_frame,
             text="Simplify",
             variable=self.simplify
-        ).grid(row=0, column=8, padx=2)
-
+        ).grid(row=0, column=0, padx=2)
         tk.Checkbutton(
-        planner_frame,
-        text="Draw Path",
-        variable=self.draw_path
-        ).grid(row=0, column=9, padx=2)
+            option_frame,
+            text="Draw Path",
+            variable=self.draw_path
+        ).grid(row=0, column=1, padx=2)
 
-        status_frame = tk.Frame(mid_frame)
-        status_frame.grid(row=0, column=1, padx=3, pady=3, sticky="e")
+        # Planning time and status group
+        status_frame = tk.Frame(bottom_frame)
+        status_frame.pack(side=tk.RIGHT, padx=5)
+
         tk.Label(status_frame, text="Time (s):").grid(
             row=0, column=0, sticky="w"
         )
@@ -467,6 +500,7 @@ class PbiPathPlannerGUI:
             resolution=1,
             length=120
         ).grid(row=0, column=1)
+
         tk.Label(status_frame, text="Collision:").grid(
             row=1, column=0, sticky="w"
         )
@@ -476,6 +510,7 @@ class PbiPathPlannerGUI:
             width=6
         )
         self.collision_light.grid(row=1, column=1, padx=2)
+
         tk.Label(status_frame, text="Constraint:").grid(
             row=2, column=0, sticky="w"
         )
@@ -485,34 +520,12 @@ class PbiPathPlannerGUI:
             width=6
         )
         self.constraint_light.grid(row=2, column=1, padx=2)
+
         tk.Label(status_frame, text="Clearance:").grid(
             row=3, column=0, sticky="w"
         )
         self.clearance_label = tk.Label(status_frame, text="0.00", width=6)
         self.clearance_label.grid(row=3, column=1, padx=2)
-
-    def _create_bottom_frame(self) -> None:
-        """
-        Creates the bottom frame with path control buttons.
-        """
-        bottom_frame = tk.Frame(self.root)
-        bottom_frame.grid(row=2, column=0, columnspan=2,
-                          padx=3, pady=3, sticky="ew")
-        tk.Button(
-            bottom_frame, text="Start", command=self.set_as_start, width=8
-        ).grid(row=0, column=0, padx=3, pady=3)
-        tk.Button(
-            bottom_frame, text="Goal", command=self.set_as_goal, width=8
-        ).grid(row=0, column=1, padx=3, pady=3)
-        tk.Button(
-            bottom_frame, text="Plan", command=self.plan, width=8
-        ).grid(row=0, column=2, padx=3, pady=3)
-        tk.Button(
-            bottom_frame, text="Run", command=self.run, width=8
-        ).grid(row=0, column=3, padx=3, pady=3)
-        tk.Button(
-            bottom_frame, text="Exit", command=self.root.quit, width=8
-        ).grid(row=0, column=4, padx=3, pady=3)
 
     def _create_state_frame(self) -> None:
         """

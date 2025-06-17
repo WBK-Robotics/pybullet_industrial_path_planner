@@ -261,7 +261,6 @@ def setup_planner_gui(robots, gripper, objects):
     robot_clearance = pi.CollisionChecker([robots[0].urdf,
                                            robots[1].urdf])
 
-
     robot_clearance.make_robot_static(robots[0].urdf)
     robot_clearance.make_robot_static(robots[1].urdf)
 
@@ -308,8 +307,8 @@ def setup_planner_gui(robots, gripper, objects):
     objectives_unequal_weights.append((clearance_objective, 1 - 0.95))
 
     def prio_joint_path_clearance_multi_obj(si):
-        return pbi.PbiMultiOptimizationObjective(si, objectives_unequal_weights)
-
+        return pbi.PbiMultiOptimizationObjective(si,
+                                                 objectives_unequal_weights)
 
     # Define planner types.
     def rrtsharp(si):
@@ -399,7 +398,8 @@ def setup_planner_gui(robots, gripper, objects):
         fmt, bfmt, lbkpiece1, rrtconnect, aitstar, rrtsharp]
     objective_list = [
         None, clearance_objective,
-        equal_joint_path_clearance_multi_obj, prio_joint_path_clearance_multi_obj,
+        equal_joint_path_clearance_multi_obj,
+        prio_joint_path_clearance_multi_obj,
         joint_path_length_objective,
         endeffector_path_length_objective
     ]
