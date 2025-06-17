@@ -1,0 +1,8 @@
+numpy<2.0.0
+pybullet
+scipy
+mock
+sphinx-rtd-theme
+https://github.com/ompl/ompl/releases/download/prerelease/ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
+git+https://github.com/WBK-Robotics/pybullet_industrial.git@main#egg=pybullet_industrial&subdirectory=src
+git+https://github.com/WBK-Robotics/pybullet_industrial_path_planner.git@main#egg=pybullet_industrial_path_planner&subdirectory=src

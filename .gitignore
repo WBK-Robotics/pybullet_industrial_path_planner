@@ -130,3 +130,17 @@ dmypy.json
 kuka_robot.png
 
 igus.mp4
+<<<<<<< Updated upstream
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/pybullet_industrial_path_planner.iml
+.idea/vcs.xml
+=======
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/pybullet_industrial_path_planner.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/inspectionProfiles/profiles_settings.xml
+>>>>>>> Stashed changes

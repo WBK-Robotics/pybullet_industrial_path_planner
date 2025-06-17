@@ -32,7 +32,7 @@ jobs:
 
     - name: Clone and install pybullet_industrial
       run: |
-        git clone --branch pbi_planner_allignment https://github.com/WBK-Robotics/pybullet_industrial.git
+        git clone --branch main https://github.com/WBK-Robotics/pybullet_industrial.git
         pip install ./pybullet_industrial/src
 
     - name: Install remaining dependencies
@@ -50,10 +50,10 @@ jobs:
         coverage run --source pybullet_industrial_path_planner -m pytest
         coverage xml
 
-    # - name: Upload Coverage to Codecov
-    #   uses: codecov/codecov-action@v2
-    #   with:
-    #     token: ${{ secrets.CODECOV_TOKEN }}
-    #     files: ./coverage.xml
-    #     fail_ci_if_error: true
-    #     verbose: true
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        fail_ci_if_error: true
+        verbose: true
