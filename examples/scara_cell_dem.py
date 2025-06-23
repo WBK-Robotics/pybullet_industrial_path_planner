@@ -6,6 +6,7 @@ import pybullet as p
 import pybullet_data
 from ompl import base as ob
 from ompl import geometric as og
+from gui_source.pbi_path_planner_gui import PbiPathPlannerGUI
 import pybullet_industrial as pi
 import pybullet_industrial_path_planner as pbi
 
@@ -219,8 +220,6 @@ def setup_planner_gui(robots, objects):
     collision_checker_D = pi.CollisionChecker()
     collision_checker_D.make_robot_static(robots[0].urdf)
 
-
-
     # Setting safe state for robot C + gripper + object
     pos, ori = robots[0].get_endeffector_pose()
     object_mover.match_moving_objects(pos, ori)
@@ -274,8 +273,6 @@ def setup_planner_gui(robots, objects):
     def lbkpiece1(si):
         return og.LBKPIECE1(si)
 
-
-
     # Initialize planner setups.
     path_planner_1 = pbi.PbiSimpleSetup(
         robot=robots[0],
@@ -283,7 +280,6 @@ def setup_planner_gui(robots, objects):
         collision_check_function=collision_check_C
     )
     path_planner_1.name = "Robot 1 + Object"
-
 
     path_planner_2 = pbi.PbiSimpleSetup(
         robot=robots[0],
@@ -314,10 +310,10 @@ def setup_planner_gui(robots, objects):
     gui_states_dir = os.path.join(
         working_dir, 'gui_states', 'scara_cell_dem'
     )
-    gui = pbi.PbiPathPlannerGUI(root, path_planner_list, objects,
-                                planner_list, objective_list,
-                                constraint_list, gui_states_dir,
-                                draw_offset=np.array([-0.0, 0.05, -1.18]))
+    gui = PbiPathPlannerGUI(root, path_planner_list, objects,
+                            planner_list, objective_list,
+                            constraint_list, gui_states_dir,
+                            draw_offset=np.array([-0.0, 0.05, -1.18]))
     root.mainloop()
     joint_path = copy.deepcopy(gui.joint_path)
     g_code_logger: pi.GCodeLogger = gui.g_code_logger
@@ -331,6 +327,3 @@ if __name__ == "__main__":
     robots, objects = setup_envirnoment(working_dir)
 
     _, g_code_logger = setup_planner_gui(robots, objects)
-
-
-

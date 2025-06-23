@@ -6,4 +6,3 @@ from pybullet_industrial_path_planner.pbi_endeffector_path_length_objective impo
 from pybullet_industrial_path_planner.pbi_multi_optimization_objective import *
 from pybullet_industrial_path_planner.pbi_state_validity_checker import *
 from pybullet_industrial_path_planner.pbi_simple_setup import *
-from pybullet_industrial_path_planner.pbi_path_planner_gui import *

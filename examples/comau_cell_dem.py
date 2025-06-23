@@ -7,6 +7,7 @@ import pybullet_data
 from ompl import base as ob
 from ompl import geometric as og
 from scipy.spatial.transform import Rotation as R
+from gui_source.pbi_path_planner_gui import PbiPathPlannerGUI
 import pybullet_industrial as pi
 import pybullet_industrial_path_planner as pbi
 
@@ -411,9 +412,9 @@ def setup_planner_gui(robots, gripper, objects):
     gui_states_dir = os.path.join(
         working_dir, 'gui_states', 'comau_cell_dem'
     )
-    gui = pbi.PbiPathPlannerGUI(root, path_planner_list, objects,
-                                planner_list, objective_list,
-                                constraint_list, gui_states_dir)
+    gui = PbiPathPlannerGUI(root, path_planner_list, objects,
+                            planner_list, objective_list,
+                            constraint_list, gui_states_dir)
     root.mainloop()
     joint_path = copy.deepcopy(gui.joint_path)
     g_code_logger: pi.GCodeLogger = gui.g_code_logger
