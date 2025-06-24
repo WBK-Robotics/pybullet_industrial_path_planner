@@ -1,7 +1,5 @@
 numpy<2.0.0
-pybullet
 scipy
 mock
 sphinx-rtd-theme
-git+https://github.com/WBK-Robotics/pybullet_industrial.git@main#egg=pybullet_industrial&subdirectory=src
 git+https://github.com/WBK-Robotics/pybullet_industrial_path_planner.git@main#egg=pybullet_industrial_path_planner&subdirectory=src
