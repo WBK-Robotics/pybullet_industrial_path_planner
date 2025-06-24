@@ -13,11 +13,6 @@ build:
     # nodejs: "20"
     # rust: "1.70"
     # golang: "1.20"
-  jobs:
-    pre_install:
-      - curl -L https://github.com/ompl/ompl/releases/download/1.7.0/wheels-ubuntu-latest-x86_64.zip -o ompl.zip
-      - unzip ompl.zip
-      - python -m pip install ompl-1.7.0-cp312-cp312-manylinux_2_28_x86_64.whl
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
