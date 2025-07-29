@@ -1,4 +1,6 @@
 ![pybullet_industrial_path_planner_logo](docs/source/images/PBI_PP_Logo.png)
+[![codecov](https://codecov.io/github/WBK-Robotics/pybullet_industrial_path_planner/graph/badge.svg?token=dlA3LrLb0M)](https://codecov.io/github/WBK-Robotics/pybullet_industrial_path_planner)
+[![Documentation Status](https://readthedocs.org/projects/pbi-path-planner/badge/?version=latest)](https://pbi-path-planner.readthedocs.io/en/latest/?badge=latest)
 # PyBullet Industrial Path Planner
 
 **PyBullet Industrial Path Planner** is a modular Python package for sampling-based path planning with industrial robots in PyBullet environments. It integrates the Open Motion Planning Library and provides tools to define, execute, and validate motion plans under geometric constraints.
