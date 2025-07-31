@@ -51,3 +51,7 @@ Installation
       git clone https://github.com/WBK-Robotics/pybullet_industrial_path_planner.git
       cd pybullet_industrial_path_planner
       pip install src/
+
+Citing the library
+
+If you use this library in your research, please cite `this paper <https://doi.org/10.5445/IR/1000183537>`_.
