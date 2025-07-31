@@ -72,3 +72,7 @@ MIT License
 ## Contributions
 
 Issues and pull requests are welcome. If you use this package in academic work, please cite or acknowledge the source.
+
+## Citing the Package
+
+If you find the package useful, please consider citing [our paper](https://doi.org/10.5445/IR/1000183537).
